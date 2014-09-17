@@ -41,5 +41,16 @@ grails.project.dependency.resolution = {
             export = false
         }
 
+        // support for static code analysis
+        compile ":codenarc:0.21"
+
     }
 }
+
+codenarc.reports = {
+    TransmartAppReport('html') {
+        outputFile = 'CodeNarc-folder-management-plugin-Report.html'
+        title = 'Report for folder-management-plugin'
+    }
+}
+
