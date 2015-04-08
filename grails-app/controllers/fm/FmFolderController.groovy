@@ -18,6 +18,7 @@ import org.transmart.biomart.*
 import org.transmart.searchapp.AuthUser
 import org.transmart.searchapp.SearchKeyword
 import org.slf4j.LoggerFactory
+import i2b2.OntNode;
 
 import javax.activation.MimetypesFileTypeMap
 
@@ -1406,11 +1407,20 @@ class FmFolderController {
         //Get the folder ID for the study selected
         def paramMap = params
         def experiment = null
-        if (params.id) {
-            experiment = Experiment.get(params.id)
-        } else if (params.accession) {
-            experiment = Experiment.findByAccession(params.accession)
-        }
+		
+		if (params.id) {
+			experiment = Experiment.get(params.id)
+		}
+		else if (params.accession) {
+			experiment = Experiment.findByAccession(params.accession)
+		}
+		
+		if (experiment == null) {
+			OntNode ont = OntNode.findByName(params.accession)
+			if (ont != null)
+				experiment = Experiment.findByAccession(ont.sourcesystemcd)
+		}
+		
         def folder = fmFolderService.getFolderByBioDataObject(experiment)
         if (params.returnJSON) {
             def fileList = folder.getFmFiles()
@@ -1425,6 +1435,19 @@ class FmFolderController {
             render(template: 'filesTable', model: [folder: folder], plugin: 'folderManagement')
         }
     }
+	
+	def getFolderHasFiles = {
+		def paramMap = params
+		def experiment = null
+		
+		OntNode ont = OntNode.findByName(params.accession)
+		if (ont != null)
+			experiment = Experiment.findByAccession(ont.sourcesystemcd)
+		
+		
+		def folder = fmFolderService.getFolderByBioDataObject(experiment)
+		render (text: folder?.fmFiles ? true : false);
+	}
 
 
 }

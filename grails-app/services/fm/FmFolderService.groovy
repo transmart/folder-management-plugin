@@ -1,9 +1,14 @@
 package fm
 
+import java.io.File;
+
 import annotation.*
+
 import com.recomdata.util.FolderType
+
 import grails.util.Holders
 import grails.validation.ValidationException
+
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.FilenameUtils
 import org.apache.solr.util.SimplePostTool
@@ -150,13 +155,16 @@ class FmFolderService {
      * @param file file to be proceessed
      * @return
      */
-    private void processFile(FmFolder fmFolder, File file) {
+    private void processFile(FmFolder fmFolder, File file, String customName = null, String description = null) {
         log.info "Importing file $file into folder $fmFolder"
 
         // Check if folder already contains file with same name.
         def fmFile;
+		
+		def newFileName = customName?:file.getName()
+		
         for (f in fmFolder.fmFiles) {
-            if (f.originalName == file.getName()) {
+            if (f.originalName == newFileName) {
                 fmFile = f;
                 break;
             }
@@ -170,13 +178,14 @@ class FmFolderService {
             log.info("File = " + file.getName() + " (" + fmFile.id + ") - Existing");
         } else {
             fmFile = new FmFile(
-                    displayName: file.getName(),
+                    displayName: newFileName,
                     originalName: file.getName(),
                     fileType: getFileType(file),
                     fileSize: file.length(),
                     filestoreLocation: "",
                     filestoreName: "",
-                    linkUrl: ""
+                    linkUrl: "",
+					fileDescription: description
             );
             if (!fmFile.save(flush: true)) {
                 fmFile.errors.each {

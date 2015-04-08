@@ -172,8 +172,8 @@ FM.handleFolderHasFilesRequest = function(source, originalResponse, node, callba
             if (response.responseText == "true") {
                 node.appendChild(FM.getFileFolderNode(node));
             }
-            source.parseXml(originalResponse, node);
-            source.endAppending(node, callback);
+           // source.parseXml(originalResponse, node);
+            //source.endAppending(node, callback);
         },
         timeout: '120000', //2 minutes
         params: {accession: node.attributes.accession}
@@ -188,7 +188,7 @@ FM.addFileNodes = function(source, response, node, callback) {
     for(var fileId in json){
         node.appendChild(FM.getFileNode(fileId, json[fileId]));
     }
-    source.endAppending(node, callback);
+    //source.endAppending(node, callback);
 }
 
 FM.openFileDetailsWindow = function(node)

@@ -8,6 +8,7 @@ import org.transmart.biomart.BioData
 import org.transmart.biomart.ConceptCode
 import org.transmart.biomart.Experiment
 import org.transmart.searchapp.SearchKeyword
+import i2b2.OntNode
 
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
@@ -307,7 +308,14 @@ class FileExportController {
 
     def exportStudyFiles = {
         def ids = []
-        def folder = fmFolderService.getFolderByBioDataObject(Experiment.findByAccession(params.accession))
+		
+		Experiment experiment;
+		
+		OntNode ont = OntNode.findByName(params.accession)
+		if (ont != null)
+			experiment = Experiment.findByAccession(ont.sourcesystemcd)
+		
+		def folder = fmFolderService.getFolderByBioDataObject(experiment)
 
         def files = folder.fmFiles
         for (file in files) {
