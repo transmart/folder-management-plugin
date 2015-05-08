@@ -11,13 +11,13 @@ grails.project.dependency.resolution = {
     }
     log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
     repositories {
-        grailsCentral()
-        mavenCentral()
         mavenLocal()
-        mavenRepo([
+    	mavenRepo([
                 name: 'repo.transmartfoundation.org-public',
                 root: 'https://repo.transmartfoundation.org/content/repositories/public/'
         ])
+        mavenCentral()
+        grailsCentral()
     }
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
